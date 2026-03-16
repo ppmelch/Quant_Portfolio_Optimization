@@ -1,5 +1,5 @@
 import pandas as pd
-from src.backend.optimization.optimization import OptimizePortfolioWeights
+from backend.src.optimization.optimization import OptimizePortfolioWeights
 
 class dynamic_backtesting:
     """

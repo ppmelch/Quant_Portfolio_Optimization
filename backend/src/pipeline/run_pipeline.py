@@ -1,9 +1,9 @@
 import pandas as pd
-from src.backend.data.financial_statements import Financial
-from src.backend.optimization.optimization import OptimizePortfolioWeights
-from src.backend.backtesting.backtest import dynamic_backtesting
-from src.backend.analytics.metrics import Metrics
-from src.backend.portfolio.portfolio_construction import PortfolioConstruction
+from backend.src.data.financial_statements import Financial
+from backend.src.optimization.optimization import OptimizePortfolioWeights
+from backend.src.backtesting.backtest import dynamic_backtesting
+from backend.src.analytics.metrics import Metrics
+from backend.src.portfolio.portfolio_construction import PortfolioConstruction
 
 def run_pipeline(
     tickers: list,
