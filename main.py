@@ -8,20 +8,39 @@ st.set_page_config(page_title="Quant Portfolio Optimization", layout="wide")
 st.title("Quant Portfolio Optimization Dashboard")
 st.markdown("---")
 
-raw_tickers = st.text_input("Tickers", value="AZO,MA,AAPL,F")
-
-benchmark = st.text_input("Benchmark", value="SPY")
-
-interval = st.selectbox("Interval", ["6m", "1y", "2y", "5y", "10y"])
-
-capital = st.number_input(
-    "Capital to invest ($)",
-    min_value=1000,
-    value=1_000_000,
-    step=100_000
+raw_tickers = st.text_input(
+    "Tickers",
+    value="AZO,MA,AAPL,F"
 )
 
-run_button = st.button("Run", type="primary")
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    benchmark = st.text_input(
+        "Benchmark",
+        value="SPY"
+    )
+
+with col2:
+    interval = st.selectbox(
+        "Interval",
+        ["6m", "1y", "2y", "5y", "10y"]
+    )
+
+with col3:
+    capital = st.number_input(
+        "Capital to invest ($)",
+        min_value=1000,
+        value=1_000_000,
+        step=100_000
+    )
+
+with col4:
+    st.write("")
+    st.write("")
+    run_button = st.button("Run", type="primary")
+
+st.markdown("---")
 
 if run_button:
 
