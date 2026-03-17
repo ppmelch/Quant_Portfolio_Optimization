@@ -26,31 +26,6 @@ telefono = img("frontend/images/Tel.png")
 portafolio = img("frontend/images/portfolio.png")
 
 
-components.html("""
-<script>
-
-const parentDoc = window.parent.document;
-
-const menu = parentDoc.querySelector(".menu");
-const scrollContainer = parentDoc.querySelector('[data-testid="stAppViewContainer"]');
-
-if(menu && scrollContainer){
-
-scrollContainer.addEventListener("scroll", () => {
-
-if(scrollContainer.scrollTop > 10){
-menu.classList.remove("transparent");
-menu.classList.add("scrolled");
-}else{
-menu.classList.remove("scrolled");
-menu.classList.add("transparent");
-}
-
-});
-
-}
-</script>
-""", height=0)
 
 #HTML
 st.markdown(f"""
@@ -113,6 +88,8 @@ Mexico Crime Data Explorer
 
 """, unsafe_allow_html=True)
 
+
+
 st.markdown("""
 <section class="hero">
 
@@ -121,8 +98,8 @@ st.markdown("""
 <h2 class="hero-subtitle">Financial Engineering Course Project</h2>
 
 <p class="hero-description">
-Interactive portfio optimization dashboard with backtesting, risk metrics,
-and capital allocation stragies. Visualizes asset retur, tfolio weights, and capital evolution
+Interactive portfio optimization dashboardh baktesting, risk metrics,
+and capital allocation stragies. Visualizes asset retns, portfolio weights, and capital evolution
 </p>
 
 </section>
@@ -187,3 +164,27 @@ st.markdown(f"""
 
 </footer>
 """, unsafe_allow_html=True)
+
+
+components.html("""
+<script>
+
+const parentDoc = window.parent.document;
+
+const menu = parentDoc.querySelector(".menu");
+const scrollContainer = parentDoc.querySelector('[data-testid="stAppViewContainer"]');
+
+scrollContainer.addEventListener("scroll", () => {
+
+    if (scrollContainer.scrollTop > 10) {
+        menu.classList.remove("transparent");
+        menu.classList.add("scrolled");
+    } else {
+        menu.classList.remove("scrolled");
+        menu.classList.add("transparent");
+    }
+
+});
+
+</script>
+""", height=0)
