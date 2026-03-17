@@ -1,5 +1,6 @@
 import pathlib
-
+import base64
+import streamlit.components.v1 as components
 import streamlit as st
 from frontend.visualization import Visualization
 from backend.src.pipeline.run_pipeline import run_pipeline
@@ -13,7 +14,15 @@ with open(css_path) as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
-import streamlit.components.v1 as components
+def img(path):
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+github = img("frontend/images/github.png")
+linkedin = img("frontend/images/LK.png")
+x_icon = img("frontend/images/X.png")
+email = img("frontend/images/correo.png")
+
 
 components.html("""
 <script>
@@ -62,21 +71,21 @@ st.markdown("""
 <div class="submenu-items">
 
 <a class="submenu-item" href="#">
-<img src="images/portfolio.png">
+<img src="frontend/images/portfolio.png">
 Quant Portfolio Optimization</a>
 
 <a class="submenu-item" href="#">
-<img src="images/portfolio.png">
+<img src="frontend/images/portfolio.png">
 Credit Scoring Model
 </a>
 
 <a class="submenu-item" href="#">
-<img src="images/portfolio.png">
+<img src="frontend/images/portfolio.png">
 Advanced Trading Strategies
 </a>
 
 <a class="submenu-item" href="#">
-<img src="images/portfolio.png">
+<img src="frontend/images/portfolio.png">
 Mexico Crime Data Explorer
 </a>
 
@@ -91,7 +100,7 @@ Mexico Crime Data Explorer
 
 <div class="submenu-items">
 <a class="submenu-item" href="tel:+523312990677">
-<img src="images/Tel.png">
+<img src="frontend/images/Tel.png">
 +52 33 1299 0677
 </a>
 </div>
@@ -147,26 +156,26 @@ if "results" in st.session_state:
 
 st.markdown("---")
 
-st.markdown(
-"""
+
+st.markdown(f"""
 <footer class="footer">
 
 <div class="social-icons">
 
 <a href="https://github.com/ppmelch" target="_blank">
-<img src="/images/github.png" alt="GitHub">
+<img src="data:image/png;base64,{github}" width="40">
 </a>
 
 <a href="https://linkedin.com/in/ppmelch" target="_blank">
-<img src="/images/LK.png" alt="LinkedIn">
+<img src="data:image/png;base64,{linkedin}" width="40">
 </a>
 
 <a href="https://x.com/ppmelch_" target="_blank">
-<img src="/images/X.png" alt="X">
+<img src="data:image/png;base64,{x_icon}" width="40">
 </a>
 
 <a href="mailto:jose.melchor.soto@gmail.com">
-<img src="/images/correo.png" alt="Email">
+<img src="data:image/png;base64,{email}" width="40">
 </a>
 
 </div>
@@ -174,7 +183,4 @@ st.markdown(
 <h5>© 2026 José Armando Melchor Soto. All rights reserved.</h5>
 
 </footer>
-""",
-unsafe_allow_html=True
-)
-
+""", unsafe_allow_html=True)
