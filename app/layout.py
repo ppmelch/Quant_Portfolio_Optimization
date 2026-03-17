@@ -1,17 +1,14 @@
-from pyparsing import results
+import pathlib
 import streamlit as st
-import pandas as pd
 import plotly.express as px
-import numpy as np
-
 from backend.src.portfolio.portfolio_construction import PortfolioConstruction
 
 
 def render_inputs():
-
+    
     raw_tickers = st.text_input(
         "Tickers (comma separated)",
-        value="AVGO , GLD , V , TSM , LLY , AMT , VOO"
+        value="AVGO , GLD , V , TSM , LLY , AMT , VOO" 
     )
 
     col1, col2, col3, col4, col5 = st.columns(5)
@@ -19,13 +16,13 @@ def render_inputs():
     with col1:
         benchmark = st.text_input(
             "Benchmark",
-            value="SPY"
+            value="SPY" 
         )
 
     with col2:
         interval = st.selectbox(
             "Data Interval",
-            ["6m", "1y", "2y", "5y", "10y"]
+            ["6m", "1y", "2y", "5y", "10y"] 
         )
         
     with col3: 
@@ -33,7 +30,7 @@ def render_inputs():
             "Rebalancing Frequency (months)",
             min_value=1,
             value=3,
-            step=1
+            step=1 , 
         )
 
     with col4:
@@ -41,20 +38,19 @@ def render_inputs():
             "Capital to invest ($)",
             min_value=1000,
             value=1_000_000,
-            step=100_000
+            step=100_000 
         )
 
     with col5:
         st.write("")
         st.write("")
-        run_button = st.button("Run", type="primary")
+        run_button = st.button("Run", type="primary" )
 
     return raw_tickers, benchmark, interval, rebalancing_freq, capital, run_button
 
 def render_layout(results, capital, viz):
 
     prices = results["prices"]
-    returns = results["returns"]
     history = results["backtest"]
     weights = results["weights"]
     asset_metrics = results["metrics"]
@@ -72,7 +68,7 @@ def render_layout(results, capital, viz):
         title="Portfolio Backtest"
     )
 
-    st.plotly_chart(fig_backtest, use_container_width=True, key="backtest_all")
+    st.plotly_chart(fig_backtest, use_container_width=True)
 
     st.markdown("---")
 
@@ -96,7 +92,7 @@ def render_layout(results, capital, viz):
             0.0,
             1.0,
             0.50,
-            step=0.05
+            step=0.05 
         )
 
     strategy_map = {
@@ -248,3 +244,5 @@ def render_layout(results, capital, viz):
     st.subheader("Strategies Statistics")
 
     st.dataframe(asset_metrics)
+    
+    
