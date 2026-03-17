@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
+import plotly.express as px
 
 class Visualization:
     """
@@ -41,8 +42,11 @@ class Visualization:
 
         fig.update_layout(
             title=dict(
-                text='Matriz de Correlación',
-                font=dict(size=16),
+                text='Correlation Matrix of Asset Returns',
+                font=dict(
+                    size=16,
+                    color="#444"
+                ),
                 x=0.5,
                 xanchor='center'
             ),
@@ -53,10 +57,24 @@ class Visualization:
             template="simple_white",
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)"
+
         )
 
-        fig.update_xaxes(showgrid=False)
-        fig.update_yaxes(showgrid=False)
+        fig.update_xaxes(
+            showgrid=False,
+            tickfont=dict(
+                color="#444",
+                size=12
+            )
+        )
+
+        fig.update_yaxes(
+            showgrid=False,
+            tickfont=dict(
+                color="#444",
+                size=12
+            )
+        )
 
         if show:
             fig.show()
@@ -66,17 +84,16 @@ class Visualization:
     # --------------------------------------------------
     # Portfolio weights pie chart
     # --------------------------------------------------
-    def plot_weights_pie(self, df_percent: pd.DataFrame, strategy_name: str, show: bool = True):
+    def plot_weights_pie(self, weights: pd.Series, strategy_name: str, show=True):
 
-        if strategy_name not in df_percent.columns:
-            raise ValueError(f"'{strategy_name}' no está en las columnas del DataFrame.")
-
-        weights = df_percent[strategy_name]
+        if not isinstance(weights, pd.Series):
+            raise ValueError("weights debe ser un pd.Series")
 
         if weights.max() > 1.5:
-            weights = weights 
+            weights = weights
 
         n_colors = len(weights)
+
         greys = [
             f'rgb({int(255 - i * 200 / (n_colors - 1))}, '
             f'{int(255 - i * 200 / (n_colors - 1))}, '
@@ -85,7 +102,7 @@ class Visualization:
         ]
 
         labels_pie = [
-            f"{weight * 100:.2f}%" if weight > 0.0001 else ''
+            f"{weight * 100:.1f}%" if weight > 0.0001 else ''
             for weight in weights
         ]
 
@@ -96,32 +113,38 @@ class Visualization:
 
         fig = go.Figure(data=[go.Pie(
             labels=weights.index,
-            values=weights,
+            values=weights.values,
             text=labels_pie,
             textposition='outside',
             textinfo='text',
             hovertext=hover_text,
             hoverinfo='text',
             marker=dict(colors=greys, line=dict(color='white', width=1)),
-            rotation=90
+            rotation=90,
+            textfont=dict(
+                color="#444",   # color del texto
+                size=13
+            ),
         )])
 
         fig.update_layout(
             title=dict(
-                text=f"Estrategia: {strategy_name}",
-                font=dict(size=16),
+                text=f"Strategy: {strategy_name}",
+                font=dict(size=16, color="#444"),
                 x=0.5,
-                xanchor='center'
+                xanchor="center"
             ),
             width=1000,
-            height=600
+            height=600,
+            template="simple_white",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)"
         )
 
         if show:
             fig.show()
 
         return fig
-
     # --------------------------------------------------
     # Capital evolution plot
     # --------------------------------------------------
@@ -144,14 +167,46 @@ class Visualization:
                 hovertemplate='%{x}<br>%{y:,.2f} USD<extra></extra>'
             ))
 
-        fig.update_layout(
-            title='Evolución del Capital - Backtesting Dinámico',
-            xaxis_title='Fecha',
-            yaxis_title='Capital acumulado (USD)',
-            hovermode='x unified',
-            width=1400,
-            height=700
+        fig_backtest = px.line(
+            history,
+            x=history.index,
+            y=history.columns,
+            title="Portfolio Backtest"
         )
+
+        fig_backtest.update_layout(
+
+            font=dict(
+                family="Poppins",
+                color="#454c72"
+            ),
+
+            title=dict(
+                font=dict(size=18, color="#454c72"),
+                x=0.5
+            ),
+
+            xaxis=dict(
+                title="Date",
+                titlefont=dict(color="#454c72"),
+                tickfont=dict(color="#454c72")
+            ),
+
+            yaxis=dict(
+                title="Capital (USD)",
+                titlefont=dict(color="#454c72"),
+                tickfont=dict(color="#454c72")
+            ),
+
+            legend=dict(
+                font=dict(color="#454c72")
+            ),
+
+            template="simple_white",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)"
+        )
+                
 
         if show:
             fig.show()
@@ -182,14 +237,38 @@ class Visualization:
             ))
 
         fig.update_layout(
-            title=f'{strategy} vs Benchmark - Backtesting',
-            xaxis_title='Fecha',
-            yaxis_title='Capital acumulado (USD)',
-            hovermode='x unified',
-            width=700,
-            height=350
+            title=dict(
+            text=f'Capital Evolution: {strategy} vs Benchmark',
+                font=dict(
+                    size=16,
+                    color="#444"
+                ),
+                x=0.5,
+                xanchor='center'
+            ),
+            template="simple_white",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)"
+        )
+        
+        
+        fig.update_xaxes(
+            showgrid=False,
+            tickfont=dict(
+                color="#444",
+                size=12
+            )
         )
 
+        fig.update_yaxes(
+            showgrid=False,
+            tickfont=dict(
+                color="#444",
+                size=12
+            )
+        )
+
+        
         if show:
             fig.show()
 

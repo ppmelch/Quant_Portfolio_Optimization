@@ -93,6 +93,7 @@ def run_pipeline(
     "prices": prices,
     "benchmark_prices": benchmark_prices,
     "returns": returns,
+    "benchmark_returns": benchmark_returns,
     "backtest": history,
     "weights": weights,
     "capital_allocation": capital_allocation,

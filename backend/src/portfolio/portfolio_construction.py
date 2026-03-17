@@ -1,4 +1,5 @@
 import pandas as pd
+import streamlit as st
 
 class PortfolioConstruction:
 
@@ -29,6 +30,7 @@ class PortfolioConstruction:
 
         return combined_returns
     
+
     def capital_allocation(self, capital):
         
         combined_weights = self.combine()

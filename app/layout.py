@@ -1,6 +1,8 @@
 import pathlib
+import pandas as pd
 import streamlit as st
 import plotly.express as px
+from backend.src.analytics.metrics import Metrics
 from backend.src.portfolio.portfolio_construction import PortfolioConstruction
 
 
@@ -111,10 +113,26 @@ def render_layout(results, capital, viz):
     # -------------------------
 
     st.subheader("Portfolio Metrics")
-    
-    metrics = results["metrics_object"] 
-    portfolio_stats = metrics.portfolio_metrics(portfolio_choice)
-    
+        
+
+    history_returns = results["backtest"].pct_change().dropna()
+
+    portfolio_returns = history_returns[portfolio_choice]
+    benchmark_returns = history_returns["Benchmark"]
+
+    combined_returns = (
+        (1 - benchmark_weight) * portfolio_returns +
+        benchmark_weight * benchmark_returns
+    )
+
+    metrics = Metrics(
+        returns=combined_returns.to_frame("Portfolio"),
+        benchmark=benchmark_returns,
+        rf=0.0375
+    )
+
+    portfolio_stats = metrics.portfolio_metrics("Portfolio")
+
     col1, col2, col3 = st.columns(3)
 
     col1.metric("Expected Return", f"{portfolio_stats['return']:.2%}")
@@ -149,8 +167,8 @@ def render_layout(results, capital, viz):
         st.subheader("Portfolio Weights")
 
         fig_weights = viz.plot_weights_pie(
-            combined_weights.to_frame("Weights"),
-            "Weights",
+            combined_weights,
+            portfolio_choice,
             show=False
         )
 
@@ -183,8 +201,8 @@ def render_layout(results, capital, viz):
         st.subheader("Capital Allocation")
 
         fig_cap = viz.plot_weights_pie(
-            allocation.to_frame("Allocation"),
-            "Allocation",
+            allocation,
+            portfolio_choice,
             show=False
         )
 
@@ -223,8 +241,8 @@ def render_layout(results, capital, viz):
     with col2:
 
         fig_qty = viz.plot_weights_pie(
-            shares.to_frame("Shares"),
-            "Shares",
+            shares,
+            portfolio_choice,
             show=False
         )
 
