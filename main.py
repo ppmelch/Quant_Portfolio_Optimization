@@ -3,10 +3,6 @@ from frontend.visualization import Visualization
 from backend.src.pipeline.run_pipeline import run_pipeline
 from app.layout import render_layout
 
-st.set_page_config(page_title="Quant Portfolio Optimization", layout="wide")
-
-st.title("Quant Portfolio Optimization Dashboard")
-st.markdown("---")
 
 raw_tickers = st.text_input(
     "Tickers",
