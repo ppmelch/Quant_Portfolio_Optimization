@@ -105,95 +105,131 @@
     margin-top:20px !important;
 }
 
+header[data-testid="stHeader"]{
+    background: transparent !important;
+}
+
+div[data-testid="stToolbar"]{
+    background: transparent !important;
+}
+
+[data-testid="stDecoration"]{
+    display:none; /* quita la línea blanca superior */
+}
 
 /* NAV MENU */
 
 .menu{
+    position: fixed;
 
-    position:fixed;
-    top:20px;
-    left:50%;
-    transform:translateX(-50%);
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+    display: flex;
+    gap: 60px;
 
-    background:rgba(200,200,200,0.15);
-    backdrop-filter:blur(10px);
+    padding: 15px 90px;
 
-    padding:15px 40px;
-    border-radius:40px;
+    border-radius: 40px;
 
-    display:flex;
-    gap:40px;
+    transition: 0.3s;
 
-    z-index:9999;
+    z-index: 1000;
+
 }
 
 .menu a{
-    color:#4f5d95;
-    text-decoration:none;
-    font-weight:500;
+    text-decoration: none;
+    font-size: 16px;
+    color: #454c72;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: 0.25s;
 }
+
+.menu a.active{
+    background: rgba(116, 116, 116, 0.2);
+    color: #454c72;
+}
+
+/* efecto hover */
 
 .menu a:hover{
-    color:#1c2a6c;
+    background: rgba(96, 95, 95, 0.15);
 }
 
 
-/* SUBMENU */
+/* estado cuando estás arriba */
+
+.menu.transparent{
+    background: transparent;
+    backdrop-filter: none;
+}
+
+/* estado cuando haces scroll */
+
+.menu.scrolled{
+    background: transparent;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
 
 .submenu{
-    position:relative;
-    margin-top:5px;
+    position: relative;
+    margin-top: 5px;
+    padding-bottom: 10px;
 }
 
 .submenu-items{
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: -230px;
 
-    display:none;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
 
-    position:absolute;
-    top:50px;
-    right:-230px;
+    padding: 10px;
+    border-radius: 12px;
 
-    background:rgba(255,255,255,0.95);
-    backdrop-filter:blur(10px);
-
-    padding:10px;
-    border-radius:12px;
-
-    min-width:230px;
+    min-width: 230px;
+}
+.submenu-item a{
+    text-decoration:none;
+    font-size:20px;
 }
 
 .submenu-item{
-
     display:flex;
-    align-items:center;
+    align-items:left;
     gap:10px;
+
 
     padding:8px 12px;
     border-radius:8px;
 
-    transition:0.3s;
-}
-
-.submenu-item:hover{
-    background:#f3f3f3;
+    transition:0.4s;
 }
 
 .submenu-item img{
-    width:35px;
+    width:23%;
+    height:1%;;
 }
 
-.submenu-item a{
-    text-decoration:none;
-    font-size:18px;
-}
-
-.submenu:hover .submenu-items{
-    display:block;
-}
 
 .contact-menu .submenu-items{
+    background:  rgba(255, 255, 255, 0.95);
     min-width:250px;
 }
+
+/* mostrar submenu */
+
+.submenu:hover .submenu-items{
+    display: block;
+}
+
+
 
 
 /* FOOTER */

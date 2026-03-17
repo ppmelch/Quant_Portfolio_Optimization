@@ -22,6 +22,8 @@ github = img("frontend/images/github.png")
 linkedin = img("frontend/images/LK.png")
 x_icon = img("frontend/images/X.png")
 email = img("frontend/images/correo.png")
+telefono = img("frontend/images/Tel.png")
+portafolio = img("frontend/images/portfolio.png")
 
 
 components.html("""
@@ -30,35 +32,28 @@ components.html("""
 const parentDoc = window.parent.document;
 
 const menu = parentDoc.querySelector(".menu");
+const scrollContainer = parentDoc.querySelector('[data-testid="stAppViewContainer"]');
 
-if(menu){
-    window.parent.addEventListener("scroll", () => {
-        if(window.parent.scrollY > 10){
-            menu.classList.remove("transparent");
-            menu.classList.add("scrolled");
-        }else{
-            menu.classList.remove("scrolled");
-            menu.classList.add("transparent");
-        }
-    });
+if(menu && scrollContainer){
+
+scrollContainer.addEventListener("scroll", () => {
+
+if(scrollContainer.scrollTop > 10){
+menu.classList.remove("transparent");
+menu.classList.add("scrolled");
+}else{
+menu.classList.remove("scrolled");
+menu.classList.add("transparent");
 }
 
-const links = parentDoc.querySelectorAll(".menu a");
-const currentPage = window.parent.location.pathname.split("/").pop();
-
-links.forEach(link => {
-    const linkPage = link.getAttribute("href").split("/").pop();
-
-    if(linkPage === currentPage){
-        link.classList.add("active");
-    }
 });
 
+}
 </script>
 """, height=0)
 
 #HTML
-st.markdown("""
+st.markdown(f"""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <nav class="menu transparent">
@@ -66,26 +61,27 @@ st.markdown("""
 <a href="https://github.com/ppmelch" target="_blank">GitHub</a>
 
 <div class="submenu">
-<a href="#">Projects</a>
+<a class="menu-link" href="#">Projects</a>
 
 <div class="submenu-items">
 
 <a class="submenu-item" href="#">
-<img src="frontend/images/portfolio.png">
-Quant Portfolio Optimization</a>
+<img src="data:image/png;base64,{portafolio}">
+Quant Portfolio Optimization
+</a>
 
 <a class="submenu-item" href="#">
-<img src="frontend/images/portfolio.png">
+<img src="data:image/png;base64,{portafolio}">
 Credit Scoring Model
 </a>
 
 <a class="submenu-item" href="#">
-<img src="frontend/images/portfolio.png">
+<img src="data:image/png;base64,{portafolio}">
 Advanced Trading Strategies
 </a>
 
 <a class="submenu-item" href="#">
-<img src="frontend/images/portfolio.png">
+<img src="data:image/png;base64,{portafolio}">
 Mexico Crime Data Explorer
 </a>
 
@@ -93,21 +89,28 @@ Mexico Crime Data Explorer
 </div>
 
 <a href="https://ppmelch.github.io/Jose_Melchor_Portfolio/">Home</a>
+
 <a href="https://ppmelch.github.io/Jose_Melchor_Portfolio/about.html">About</a>
 
 <div class="submenu contact-menu">
-<a href="#">Contact</a>
+
+<a class="menu-link" href="#">Contact</a>
 
 <div class="submenu-items">
+
 <a class="submenu-item" href="tel:+523312990677">
-<img src="frontend/images/Tel.png">
+<img src="data:image/png;base64,{telefono}">
 +52 33 1299 0677
 </a>
+
 </div>
 
 </div>
 
 </nav>
+
+
+
 """, unsafe_allow_html=True)
 
 st.markdown("""
@@ -119,7 +122,7 @@ st.markdown("""
 
 <p class="hero-description">
 Interactive portfio optimization dashboard with backtesting, risk metrics,
-and capital allocation stragies. Visualizes asset cns, portfolio weights, and capital evolution
+and capital allocation stragies. Visualizes asset retur, tfolio weights, and capital evolution
 </p>
 
 </section>
