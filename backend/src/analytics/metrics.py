@@ -163,6 +163,14 @@ class Metrics():
         return summary_df.T.round(4)
     
     
+    def portfolio_metrics(self, portfolio_name):
+
+        return {
+            "return": self.anual_rets()[portfolio_name],
+            "vol": self.anual_vol()[portfolio_name],
+            "sharpe": self.sharpe_ratio()[portfolio_name]
+        }
+    
         
     
         

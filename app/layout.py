@@ -1,7 +1,10 @@
+from pyparsing import results
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import numpy as np
+
+from backend.src.portfolio.portfolio_construction import PortfolioConstruction
 
 
 def render_inputs():
@@ -46,7 +49,7 @@ def render_inputs():
         st.write("")
         run_button = st.button("Run", type="primary")
 
-    return raw_tickers, benchmark, interval, capital, run_button , rebalancing_freq
+    return raw_tickers, benchmark, interval, rebalancing_freq, capital, run_button
 
 def render_layout(results, capital, viz):
 
@@ -104,44 +107,32 @@ def render_layout(results, capital, viz):
     }
 
     selected_weights = weights[strategy_map[portfolio_choice]]
-
+    
+    constructor = PortfolioConstruction(weights_strategy=selected_weights, benchmark_weight=benchmark_weight)
+  
     # -------------------------
     # PORTFOLIO METRICS
     # -------------------------
 
     st.subheader("Portfolio Metrics")
-
-    combined_history = (
-        (1 - benchmark_weight) * history[portfolio_choice] +
-        benchmark_weight * history["Benchmark"]
-    )
-
-    combined_returns = combined_history.pct_change().dropna()
-
-    expected_return = combined_returns.mean() * 252
-    volatility = combined_returns.std() * np.sqrt(252)
-
-    rf = 0.0375
-    sharpe = (expected_return - rf) / volatility
-
+    
+    metrics = results["metrics_object"] 
+    portfolio_stats = metrics.portfolio_metrics(portfolio_choice)
+    
     col1, col2, col3 = st.columns(3)
 
-    col1.metric("Expected Return", f"{expected_return:.2%}")
-    col2.metric("Volatility", f"{volatility:.2%}")
-    col3.metric("Sharpe Ratio", f"{sharpe:.2f}")
+    col1.metric("Expected Return", f"{portfolio_stats['return']:.2%}")
+    col2.metric("Volatility", f"{portfolio_stats['vol']:.2%}")
+    col3.metric("Sharpe Ratio", f"{portfolio_stats['sharpe']:.2f}")
 
     st.markdown("---")
 
     # -------------------------
     # PORTFOLIO WEIGHTS
     # -------------------------
+    
+    combined_weights = constructor.combine()
 
-    portfolio_weight = 1 - benchmark_weight
-
-    combined_weights = selected_weights * portfolio_weight
-    combined_weights["Benchmark"] = benchmark_weight
-
-    allocation = combined_weights * capital
 
     col1, col2 = st.columns(2)
 
@@ -161,35 +152,33 @@ def render_layout(results, capital, viz):
 
         st.subheader("Portfolio Weights")
 
-        fig_weights = px.pie(
-            values=combined_weights.values,
-            names=combined_weights.index
+        fig_weights = viz.plot_weights_pie(
+            combined_weights.to_frame("Weights"),
+            "Weights",
+            show=False
         )
 
         fig_weights.update_traces(textinfo="label+percent")
 
         st.plotly_chart(fig_weights, use_container_width=True)
+        
 
     # -------------------------
     # CORRELATION + CAPITAL
     # -------------------------
+    allocation = constructor.capital_allocation(capital)
+
+
 
     col1, col2 = st.columns(2)
 
     with col1:
 
         st.subheader("Correlation Matrix")
-
-        returns_with_benchmark = returns.copy()
-        returns_with_benchmark["Benchmark"] = history["Benchmark"].pct_change()
-
-        corr_matrix = returns_with_benchmark.corr()
-
-        fig_corr = px.imshow(
-            corr_matrix,
-            text_auto=True,
-            color_continuous_scale="RdBu_r"
-        )
+        
+        corr_matrix = results["correlation"]
+        
+        fig_corr = viz.corr_matrix(corr_matrix, show=False)
 
         st.plotly_chart(fig_corr, use_container_width=True)
 
@@ -197,9 +186,10 @@ def render_layout(results, capital, viz):
 
         st.subheader("Capital Allocation")
 
-        fig_cap = px.pie(
-            names=allocation.index,
-            values=allocation.values
+        fig_cap = viz.plot_weights_pie(
+            allocation.to_frame("Allocation"),
+            "Allocation",
+            show=False
         )
 
         fig_cap.update_traces(
@@ -212,6 +202,19 @@ def render_layout(results, capital, viz):
     # -------------------------
     # SHARES
     # -------------------------
+    
+    shares = constructor.compute_shares(
+        prices,
+        results["benchmark_prices"],
+        capital
+    )
+            
+                
+    shares_df = constructor.shares_dataframe(
+        prices,
+        results["benchmark_prices"],
+        capital
+    )
 
     col1, col2 = st.columns(2)
 
@@ -219,29 +222,14 @@ def render_layout(results, capital, viz):
 
         st.subheader("Shares to Buy")
 
-        latest_prices = prices.iloc[-1].copy()
-
-        benchmark_price = results["benchmark_prices"].iloc[-1]
-
-        latest_prices["Benchmark"] = benchmark_price
-
-        shares = (allocation / latest_prices).round().astype(int)
-
-        shares_df = pd.DataFrame({
-            "Price": latest_prices,
-            "Weight": combined_weights,
-            "Capital": allocation,
-            "Shares": shares
-        })
-
         st.dataframe(shares_df)
 
     with col2:
 
-        fig_qty = px.pie(
-            names=shares.index,
-            values=shares.values,
-            title="Number of Shares"
+        fig_qty = viz.plot_weights_pie(
+            shares.to_frame("Shares"),
+            "Shares",
+            show=False
         )
 
         fig_qty.update_traces(
@@ -257,6 +245,6 @@ def render_layout(results, capital, viz):
     # ASSET STATS
     # -------------------------
 
-    st.subheader("Asset Statistics")
+    st.subheader("Strategies Statistics")
 
     st.dataframe(asset_metrics)

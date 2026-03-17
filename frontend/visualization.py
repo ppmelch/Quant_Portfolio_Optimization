@@ -71,7 +71,7 @@ class Visualization:
         weights = df_percent[strategy_name]
 
         if weights.max() > 1.5:
-            weights = weights / 100
+            weights = weights 
 
         n_colors = len(weights)
         greys = [

@@ -3,6 +3,7 @@ from frontend.visualization import Visualization
 from backend.src.pipeline.run_pipeline import run_pipeline
 from app.layout import render_inputs , render_layout
 
+st.set_page_config(layout="wide")
 
 raw_tickers, benchmark, interval, rebalancing_freq, capital, run_button = render_inputs()
 

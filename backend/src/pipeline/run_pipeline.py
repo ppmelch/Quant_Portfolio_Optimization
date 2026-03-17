@@ -27,10 +27,14 @@ def run_pipeline(
 
     returns = prices.pct_change().dropna()
     benchmark_returns = benchmark_prices.pct_change().dropna()
+    
+    latest_prices = prices.iloc[-1]
+    latest_prices["Benchmark"] = benchmark_prices.iloc[-1]
+    
+    returns_with_benchmark = returns.copy()
+    returns_with_benchmark["Benchmark"] = benchmark_returns
 
-
-    corr_matrix = returns.corr()
-
+    corr_matrix = returns_with_benchmark.corr()
 
     optimizer = OptimizePortfolioWeights(
         returns=returns,
@@ -56,7 +60,8 @@ def run_pipeline(
     )
 
     final_weights = constructor.combine()
-
+    
+    
     backtest = dynamic_backtesting(
         prices_tactical=prices,
         prices_strategic=prices,
@@ -70,22 +75,32 @@ def run_pipeline(
 
     history_returns = history.pct_change().dropna()
 
-    metrics = Metrics(
+    metrics_object = Metrics(
         returns=history_returns,
         benchmark=history_returns["Benchmark"],
         rf=risk_free_rate
     )
 
-    metrics_table = metrics.summary()
+    metrics_table = metrics_object.summary()
+    
+    capital_allocation = constructor.capital_allocation(capital)
+
+    shares = constructor.compute_shares(prices, benchmark_prices, capital)
+    
+    shares_df = shares.to_frame("Shares")
 
     results = {
-        "prices": prices,
-        "benchmark_prices": benchmark_prices,
-        "returns": returns,
-        "backtest": history,
-        "weights": weights,
-        "correlation": corr_matrix,
-        "metrics": metrics_table,
-        "final_weights": final_weights
+    "prices": prices,
+    "benchmark_prices": benchmark_prices,
+    "returns": returns,
+    "backtest": history,
+    "weights": weights,
+    "capital_allocation": capital_allocation,
+    "correlation": corr_matrix,
+    "metrics_object": metrics_object,
+    "metrics": metrics_table,   # ← agregar esto
+    "final_weights": final_weights,
+    "shares": shares,
+    "shares_df": shares_df
     }
     return results
