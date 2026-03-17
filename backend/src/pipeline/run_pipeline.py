@@ -16,10 +16,6 @@ def run_pipeline(
     benchmark_weight: float = 0.0
 ):
 
-    # --------------------------------------------------
-    # DOWNLOAD DATA
-    # --------------------------------------------------
-
     financial = Financial(
         assets=tickers,
         benchmark=benchmark,
@@ -28,22 +24,13 @@ def run_pipeline(
 
     prices, benchmark_prices = financial.clean_data()
 
-    # --------------------------------------------------
-    # COMPUTE RETURNS
-    # --------------------------------------------------
 
     returns = prices.pct_change().dropna()
     benchmark_returns = benchmark_prices.pct_change().dropna()
 
-    # --------------------------------------------------
-    # CORRELATION MATRIX
-    # --------------------------------------------------
 
     corr_matrix = returns.corr()
 
-    # --------------------------------------------------
-    # PORTFOLIO OPTIMIZATION
-    # --------------------------------------------------
 
     optimizer = OptimizePortfolioWeights(
         returns=returns,
@@ -57,15 +44,11 @@ def run_pipeline(
         "Max_omega": pd.Series(optimizer.opt_max_omega(benchmark_returns), index=returns.columns)
     }
 
-    # Convert selected strategy weights to Series
     strategy_weights = pd.Series(
         weights[strategy],
         index=returns.columns
     )
 
-    # --------------------------------------------------
-    # PORTFOLIO CONSTRUCTION
-    # --------------------------------------------------
 
     constructor = PortfolioConstruction(
         weights_strategy=strategy_weights,
@@ -73,10 +56,6 @@ def run_pipeline(
     )
 
     final_weights = constructor.combine()
-
-    # --------------------------------------------------
-    # BACKTESTING
-    # --------------------------------------------------
 
     backtest = dynamic_backtesting(
         prices_tactical=prices,
@@ -89,12 +68,7 @@ def run_pipeline(
 
     history = backtest.simulation()
 
-    # Convert capital curve to returns
     history_returns = history.pct_change().dropna()
-
-    # --------------------------------------------------
-    # METRICS CALCULATION
-    # --------------------------------------------------
 
     metrics = Metrics(
         returns=history_returns,
@@ -104,9 +78,6 @@ def run_pipeline(
 
     metrics_table = metrics.summary()
 
-    # --------------------------------------------------
-    # RESULTS DICTIONARY
-    # --------------------------------------------------
     results = {
         "prices": prices,
         "benchmark_prices": benchmark_prices,

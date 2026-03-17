@@ -7,11 +7,11 @@ import numpy as np
 def render_inputs():
 
     raw_tickers = st.text_input(
-        "Tickers",
-        value="AZO,MA,AAPL,F"
+        "Tickers (comma separated)",
+        value="AVGO , GLD , V , TSM , LLY , AMT , VOO"
     )
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
 
     with col1:
         benchmark = st.text_input(
@@ -21,11 +21,19 @@ def render_inputs():
 
     with col2:
         interval = st.selectbox(
-            "Interval",
+            "Data Interval",
             ["6m", "1y", "2y", "5y", "10y"]
         )
+        
+    with col3: 
+        rebalancing_freq = st.number_input(
+            "Rebalancing Frequency (months)",
+            min_value=1,
+            value=3,
+            step=1
+        )
 
-    with col3:
+    with col4:
         capital = st.number_input(
             "Capital to invest ($)",
             min_value=1000,
@@ -33,12 +41,12 @@ def render_inputs():
             step=100_000
         )
 
-    with col4:
+    with col5:
         st.write("")
         st.write("")
         run_button = st.button("Run", type="primary")
 
-    return raw_tickers, benchmark, interval, capital, run_button
+    return raw_tickers, benchmark, interval, capital, run_button , rebalancing_freq
 
 def render_layout(results, capital, viz):
 
