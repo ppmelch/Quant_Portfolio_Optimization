@@ -1,162 +1,142 @@
-
-/* APP BACKGROUND */
- 
+/* =====================================================
+APP BACKGROUND
+===================================================== */
 .stApp{
-    margin:1px;
+    margin:0px;
     padding-top:80px;
- 
     background: linear-gradient(270deg,#9ea2a1,#d9d9d9,#797979,#c7cdcc);
     background-size:400% 400%;
     animation: gradient 12s ease infinite;
- 
     font-family:'Poppins', sans-serif !important;
 }
- 
+
 @keyframes gradient{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+h3{
+    font-size:32px !important;
+    color:#454c72 !important;
+    font-weight:700 !important;
+    letter-spacing:0.5px;
+    align-items: center;
 }
  
- 
-/* STREAMLIT CLEANUP */
- 
+header {
+    z-index: 0 !important;
+}
+/* =====================================================
+STREAMLIT CLEANUP
+===================================================== */
 [data-testid="stAppViewContainer"],
 [data-testid="stMain"],
 .block-container{
     background:transparent !important;
 }
- 
+
 [data-testid="stSidebar"]{
     background:transparent !important;
 }
- 
+
 .block-container{
     max-width:1600px;
     margin:auto;
     padding-top:40px;
 }
- 
- 
-/* HERO SECTION */
- 
+
+/* =====================================================
+HEADER CLEAN
+===================================================== */
+header[data-testid="stHeader"],
+div[data-testid="stToolbar"]{
+    background: transparent !important;
+}
+
+[data-testid="stDecoration"]{
+    display:none;
+}
+
+/* =====================================================
+HERO
+===================================================== */
 .hero{
     max-width:1500px;
     margin:auto;
     text-align:center;
     padding-top:40px;
 }
- 
-.typewriter{
- 
-    font-size: clamp(50px, 6vw, 100px) !important;
-    font-weight:700;
- 
-    max-width:max-content !important;
-    margin:auto;
- 
-    white-space: nowrap !important;
- 
-    overflow:hidden;
-    border-right:3px solid black;
- 
-    white-space:normal;
- 
-    display:inline-block;
- 
-    text-align:center;
- 
-    animation: blink 1s infinite;
- 
-    color:#4a537c;
-}
- 
+
 .hero .typewriter{
-    color: #454c72 !important;
-    font-size:105px !important;
-    margin-top:50px !important;
-    margin-bottom:0 !important;
+    font-size: clamp(70px, 9vw, 105px) !important;
+    margin-top: 30px !important;
+    white-space: normal;
+    word-break: break-word;
+    color:#3f4c74;
 }
- 
-@keyframes typing{
-    from{width:0}
-    to{width:100%}
-}
- 
-@keyframes blink{
-    100%{border-color:transparent}
-}
- 
+
 .hero-subtitle{
     font-size:70px !important;
     color:#444 !important;
-    font-family:'Poppins', sans-serif !important;
-    margin-top:10px !important;
     font-weight:700 !important;
 }
- 
+
 .hero-description{
- 
     font-size: clamp(20px, 1.4vw, 24px) !important;
- 
     color:#3f4c74 !important;
- 
     max-width:1300px !important;
     margin:auto !important;
     margin-top:20px !important;
 }
- 
-header[data-testid="stHeader"]{
-    background: transparent !important;
-}
- 
-div[data-testid="stToolbar"]{
-    background: transparent !important;
-}
- 
-[data-testid="stDecoration"]{
-    display:none; /* quita la línea blanca superior */
-}
- 
-/* NAV MENU */
- 
+
+/* =====================================================
+NAV MENU
+===================================================== */
+
 .menu{
- 
     position: fixed;
- 
-    top: 50px;
+
+    top: 30px;
     left: 50%;
     transform: translateX(-50%);
- 
-    display: flex;
     align-items: center;
-    gap: 60px;
- 
-    padding: 15px 90px;
- 
+    display: flex;
+    gap: 50px;
+
+    padding: 1px 50px;
+
     border-radius: 40px;
- 
-    /* Sin fondo por defecto — controlado por .transparent y .scrolled */
-    background: transparent;
-    backdrop-filter: none;
-    box-shadow: none;
- 
-    transition: background 0.3s ease,
-                backdrop-filter 0.3s ease,
-                box-shadow 0.3s ease;
- 
-    z-index: 9999;
+
+    transition: 0.3s;
+
+    z-index: 100000;
+    white-space: nowrap;
 }
- 
+
 .menu a{
     text-decoration: none;
     font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #454c72;
-    padding: 10px 20px;
+    padding: 10px 10px;
+    line-height: 1; 
     border-radius: 20px;
     transition: 0.25s;
+    height: 100%;
 }
- 
+
+.menu a:not(.menu-link) {
+    transform: translateY(7px);
+}
+.contact-menu .menu-link {
+    transform: translateY(7px);
+}
+
+
+
 .menu a.active{
     background: rgba(116, 116, 116, 0.2);
     color: #454c72;
@@ -169,44 +149,12 @@ div[data-testid="stToolbar"]{
 }
  
  
- 
- 
-/* LABELS DE INPUTS */
- 
-label{
-    color:#454c72 !important;
-    font-weight:600 !important;
-    font-size:14px !important;
+ .menu a,
+.submenu{
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
- 
-/* STREAMLIT INPUT LABELS */
- 
-[data-testid="stWidgetLabel"]{
-    color:#454c72 !important;
-    font-weight:600 !important;
-}
-div[data-testid="stWidgetLabel"]{
-    color:#454c72 !important;
-}
- 
- 
-/* quitar fondo oscuro de plotly en streamlit */
-[data-testid="stPlotlyChart"] {
-    background-color: transparent !important;
-}
- 
-[data-testid="stPlotlyChart"] > div {
-    background-color: transparent !important;
-}
- 
-.js-plotly-plot,
-.plotly,
-.plot-container,
-.svg-container {
-    background-color: transparent !important;
-}
- 
-/* estado cuando estás arriba */
  
 .menu.transparent{
     background: transparent !important;
@@ -223,65 +171,262 @@ div[data-testid="stWidgetLabel"]{
     box-shadow: 0 10px 25px rgba(0,0,0,0.25) !important;
 }
  
+
+
 .submenu{
     position: relative;
-    margin-top: 5px;
-    padding-bottom: 10px;
+    margin-top: 0px;
+    padding-bottom: 0px;
 }
- 
+
 .submenu-items{
     display: none;
     position: absolute;
-    top: 50px;
-    right: -230px;
- 
+    top: 100%;
+    left: 0;   /* 👈 en vez de right */
+    margin-top: 0;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
- 
+
     padding: 10px;
     border-radius: 12px;
- 
+
     min-width: 230px;
+    transition: opacity 0.4s ease;
 }
+
 .submenu-item a{
     text-decoration:none;
-    font-size:20px;
+    font-size:10px;
 }
- 
+
 .submenu-item{
     display:flex;
     align-items:left;
     gap:10px;
- 
- 
+
+
     padding:8px 12px;
     border-radius:8px;
- 
+
     transition:0.4s;
 }
- 
+
+
 .submenu-item img{
     width:23%;
     height:1%;;
 }
- 
- 
+
+
 .contact-menu .submenu-items{
     background:  rgba(255, 255, 255, 0.95);
     min-width:250px;
 }
- 
+
 /* mostrar submenu */
- 
+
 .submenu:hover .submenu-items{
     display: block;
 }
- 
- 
- 
- 
-/* FOOTER */
- 
+
+/* =====================================================
+LABELS
+===================================================== */
+label,
+[data-testid="stWidgetLabel"]{
+    color:#454c72 !important;
+    font-weight:600 !important;
+}
+
+/* =====================================================
+PLOTLY
+===================================================== */
+[data-testid="stPlotlyChart"] {
+    background: rgba(255,255,255,0.3) !important;
+    border-radius: 40px !important;
+}
+[data-testid= "stPlotlyChart"] :hover{
+    background: rgba(28, 27, 27, 0.5) !important;
+    border-radius: 40px !important}
+
+
+[data-testid="stPlotlyChart"] > div,
+.js-plotly-plot,
+.plotly,
+.plot-container,
+.svg-container {
+    background: transparent !important;
+}
+
+
+/* HEADER DE TABLA */
+thead tr th {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* =====================================================
+METRICS
+===================================================== */
+[data-testid="stMetric"]{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:25px;
+    border-radius:20px;
+}
+
+[data-testid="stMetric"]:hover{
+    background: rgba(255,255,255,0.35);
+    transform: translateY(-5px);
+}
+
+/* =====================================================
+SELECTBOX
+===================================================== */
+div[data-baseweb="select"] > div{
+    background: white!important;
+    border: 2px solid rgba(69,76,114,0.3) !important;
+    border-radius: 40px !important;
+}
+
+div[data-baseweb="select"]:hover > div{
+    border: 2px solid #454c72 !important;
+}
+
+div[data-baseweb="select"] span{
+    color:#454c72 !important;
+}
+
+/* dropdown */
+ul[role="listbox"]{
+    background: white !important;
+    border-radius: 12px !important;
+}
+li[role="option"]{
+    background: white !important;
+    color:#454c72 !important;
+}
+
+li[role="option"]:hover{
+    background: #454c72 !important;
+    color:white !important;
+}
+
+/* =====================================================
+INPUTS
+===================================================== */
+input{
+    border: none !important;
+    background: white !important;
+    box-shadow: none !important;
+}
+
+div[data-baseweb="input"]{
+    border-radius: 40px !important;
+    border: 2px solid transparent !important;
+    background: white !important;
+    overflow: hidden !important;
+}
+
+div[data-baseweb="input"]:hover{
+    border: 4px solid #454c72 !important;
+}
+
+/* =====================================================
+NUMBER INPUT
+===================================================== */
+div[data-testid="stNumberInput"] > div{
+    border-radius: 40px !important;
+    background: #454c72 !important;
+    overflow: hidden !important;
+}
+
+div[data-testid="stNumberInput"] input{
+    background: transparent !important;
+    border: none !important;
+}
+
+div[data-testid="stNumberInput"] button{
+    background: transparent !important;
+    border: none !important;
+}
+
+div[data-testid="stNumberInput"] button:hover{
+    background: #454c72 !important;
+    color: #ffffff !important;
+}
+
+/* COLOR DE LOS ICONOS + - */
+div[data-testid="stNumberInput"] button svg{
+    fill: #ffffff !important;
+}
+/* =====================================================
+SLIDER
+===================================================== */
+[data-baseweb="slider"] [role="slider"]{
+    background-color: #b1004a !important;
+}
+
+[data-baseweb="slider"] div[aria-valuenow]{
+    background: #a40000 !important;
+}
+
+[data-baseweb="slider"] > div > div > div{
+    background: #444 !important;
+}
+
+/* =====================================================
+BUTTON
+===================================================== */
+div[data-testid="stButton"] > button{
+    background-color: #454c72 !important;
+    color: white !important;
+    border-radius: 12px !important;
+    border: none !important;
+}
+
+div[data-testid="stButton"] > button:hover{
+    background-color: #ffffff !important;
+    color: #454c72 !important;
+    transform: translateY(-2px);
+}
+
+
+
+
+/* =====================================================
+DATAFRAME
+===================================================== */
+
+/* DATAFRAME HEADER */
+[data-testid="stDataFrame"] thead tr th,
+[data-testid="stDataFrame"] .dvn-scroller .header-cell,
+.glideDataEditor .headerRow,
+[class*="headerRow"],
+[class*="gdg-header"] {
+    background: rgba(255,255,255,0.9) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* DATAFRAME GENERAL */
+[data-testid="stDataFrame"] {
+    background: rgba(255,255,255,0.6) !important;
+    border-radius: 12px !important;
+}
+
+[data-testid="stDataFrame"] canvas {
+    border-radius: 12px !important;
+}
+
+/* =====================================================
+FOOTER
+===================================================== */
+
 .footer{
  
     padding-top:10px;
@@ -301,6 +446,11 @@ div[data-testid="stWidgetLabel"]{
     color:white;
 }
  
+.footer h5{
+    font-size:14px;
+    font-weight:500;
+    margin-top:10px;
+}
  
 /* SOCIAL ICONS */
  
@@ -334,183 +484,4 @@ div[data-testid="stWidgetLabel"]{
 ::selection{
     background:#960505;
     color:white;
-}
-.footer h5{
-    font-size:14px;
-    font-weight:500;
-    margin-top:10px;
-}
- 
- 
-.metric-card{
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(10px);
- 
-    padding:25px;
-    border-radius:20px;
- 
-    text-align:center;
- 
-    box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
- 
-.metric-title{
-    font-size:18px;
-    color:#555;
-    align-items: center;
-}
- 
-.metric-value{
-    font-size:32px;
-    font-weight:700;
-    color:#454c72;
-}
- 
-/* TITULOS DE SECCION */
- 
-h3{
-    font-size:32px !important;
-    color:#454c72 !important;
-    font-weight:700 !important;
-    letter-spacing:0.5px;
-    align-items: center;
-}
- 
-/* LABELS */
- 
-label{
-    font-size:16px !important;
-    font-weight:600 !important;
-    color:#3f4c74 !important;
-}
- 
- 
-/* METRIC CONTAINER */
- 
-[data-testid="stMetric"]{
- 
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
- 
-    text-align:center;
- 
-    padding:25px;
-    border-radius:20px;
- 
-    transition: all 0.3s ease;
- 
-}
- 
-/* HOVER EFFECT */
- 
-[data-testid="stMetric"]:hover{
- 
-    background: rgba(255,255,255,0.35);
-    backdrop-filter: blur(10px);
- 
-    transform: translateY(-5px);
- 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
- 
-}
- 
-/* METRIC LABEL */
- 
-[data-testid="stMetricLabel"]{
- 
-    text-align:center !important;
- 
-    font-size:16px;
-    font-weight:500;
- 
-    color:#666;
- 
-}
- 
-/* METRIC VALUE */
- 
-[data-testid="stMetricValue"]{
- 
-    text-align:center !important;
- 
-    font-size:40px !important;
-    font-weight:700;
- 
-    color:#444;
- 
-}
-/* SELECTBOX */
- 
-div[data-baseweb="select"]{
-    background: rgba(255,255,255,0.6) !important;
-    border-radius:12px !important;
-    font-weight:600;
-}
- 
-/* SLIDER */
- 
-[data-baseweb="slider"] span{
-    color:#454c72 !important;
-    font-weight:600;
-}
- 
-div[data-testid="column"]{
- 
-    display:flex;
-    justify-content:center;
-}
- 
-/* CENTER METRICS */
- 
-[data-testid="stMetric"]{
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-}
- 
-[data-testid="stMetricLabel"]{
-    width:100%;
-    text-align:center !important;
-}
- 
- 
-/* SELECTBOX CONTAINER */
- 
-div[data-baseweb="select"] > div{
- 
-    background: transparent !important;
- 
-    border: 2px solid rgba(69,76,114,0.35) !important;
- 
-    border-radius:12px !important;
- 
-    transition: all 0.25s ease;
-}
- 
-div[data-baseweb="select"] > div:hover{
- 
-    border: 2px solid #454c72 !important;
- 
-    background: rgba(255,255,255,0.15) !important;
-}
-/* TEXTO VALOR SELECCIONADO */
- 
-div[data-baseweb="select"] [class*="Value"]{
-    color:#454c72 !important;
-    font-weight:600 !important;
-}
- 
-div[data-baseweb="select"] span{
- 
-    color:#454c72 !important;
-    font-weight:600;
-}
- 
-div[data-baseweb="select"] svg{
-    fill:#454c72 !important;
 }

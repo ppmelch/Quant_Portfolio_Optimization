@@ -36,14 +36,9 @@ st.markdown(f"""
 <a href="https://github.com/ppmelch" target="_blank">GitHub</a>
  
 <div class="submenu">
-<a class="menu-link" href="#">Projects</a>
+<a class="menu-link">Projects</a>
  
 <div class="submenu-items">
- 
-<a class="submenu-item" href="#">
-<img src="data:image/png;base64,{portafolio}">
-Quant Portfolio Optimization
-</a>
  
 <a class="submenu-item" href="#">
 <img src="data:image/png;base64,{portafolio}">
@@ -63,19 +58,19 @@ Mexico Crime Data Explorer
 </div>
 </div>
  
-<a href="https://ppmelch.github.io/Jose_Melchor_Portfolio/">Home</a>
+<a href="https://ppmelch.github.io/Jose_Melchor_Portfolio/" target="_self">Home</a>
  
-<a href="https://ppmelch.github.io/Jose_Melchor_Portfolio/about.html">About</a>
+<a href="https://ppmelch.github.io/Jose_Melchor_Portfolio/about.html" target="_self">About</a>
  
 <div class="submenu contact-menu">
  
-<a class="menu-link" href="#">Contact</a>
+<a class="menu-link" >Contact</a>
  
 <div class="submenu-items">
  
-<a class="submenu-item" href="tel:+523312990677">
-<img src="data:image/png;base64,{telefono}">
-+52 33 1299 0677
+<a class="submenu-item" href="#" onclick="copyPhone(event)">
+    <img src="data:image/png;base64,{telefono}">
+    +52 33 1299 0677
 </a>
  
 </div>
@@ -98,8 +93,8 @@ st.markdown("""
 <h2 class="hero-subtitle">Financial Engineering Course Project</h2>
  
 <p class="hero-description">
-Interactive portfio optimizat dashboardh baktesting, risk metrics,
-and capital allagies. Visualizretns, portfolio weights, andapital evolution
+Intere potfolo ozaon dsboard wting, risk metrics,
+and capl alocation strategies. Visualizatis, portfolio weights, and capital evolution
 </p>
  
 </section>
@@ -160,7 +155,7 @@ st.markdown(f"""
  
 </div>
  
-<h5>© 2026 José Armando Melchor Soto. All rights reserved.</h5>
+<h5>© 2026 José Armando Melchor Soto. All ghts reserved.</h5>
  
 </footer>
 """, unsafe_allow_html=True)
@@ -168,22 +163,38 @@ st.markdown(f"""
  
 components.html("""
 <script>
- 
+
 function initMenu() {
- 
+
     const parentDoc = window.parent.document;
     const menu = parentDoc.querySelector(".menu");
-    const scrollContainer = parentDoc.querySelector('[data-testid="stAppViewContainer"]');
- 
-    // Si Streamlit aún no renderizó los elementos, reintentar
-    if (!menu || !scrollContainer) {
+
+    if (!menu) {
         setTimeout(initMenu, 150);
         return;
     }
- 
-    // Aplicar estado inicial según posición actual del scroll
-    function updateMenu() {
-        if (scrollContainer.scrollTop > 10) {
+
+    // Candidatos en orden de prioridad
+    const selectors = [
+        '[data-testid="stMainBlockContainer"]',
+        '[data-testid="stAppViewBlockContainer"]',
+        '[data-testid="stMain"]',
+        '[data-testid="stAppViewContainer"]',
+        '.main',
+    ];
+
+    let scrollContainer = null;
+
+    for (const sel of selectors) {
+        const el = parentDoc.querySelector(sel);
+        if (el && el.scrollHeight > el.clientHeight) {
+            scrollContainer = el;
+            break;
+        }
+    }
+
+    function updateMenu(scrollTop) {
+        if (scrollTop > 10) {
             menu.classList.remove("transparent");
             menu.classList.add("scrolled");
         } else {
@@ -191,13 +202,58 @@ function initMenu() {
             menu.classList.add("transparent");
         }
     }
- 
-    updateMenu(); // estado al cargar
-    scrollContainer.addEventListener("scroll", updateMenu);
- 
+
+    if (scrollContainer) {
+        updateMenu(scrollContainer.scrollTop);
+        scrollContainer.addEventListener("scroll", () => updateMenu(scrollContainer.scrollTop));
+    }
+
+    // Fallback: window del padre
+    window.parent.addEventListener("scroll", () => {
+        updateMenu(window.parent.scrollY || window.parent.pageYOffset || 0);
+    });
+
+    // Si no encontró container, usar MutationObserver
+    if (!scrollContainer) {
+        const observer = new MutationObserver(() => {
+            for (const sel of selectors) {
+                const el = parentDoc.querySelector(sel);
+                if (el && el.scrollHeight > el.clientHeight) {
+                    scrollContainer = el;
+                    updateMenu(scrollContainer.scrollTop);
+                    scrollContainer.addEventListener("scroll", () => updateMenu(scrollContainer.scrollTop));
+                    observer.disconnect();
+                    break;
+                }
+            }
+        });
+        observer.observe(parentDoc.body, { childList: true, subtree: true });
+    }
 }
- 
+
 initMenu();
- 
+
+
 </script>
+""", height=0)
+
+components.html("""
+
+<script>
+function copyPhone(event) {
+    event.preventDefault();
+
+    const phone = "+523312990677";
+
+    navigator.clipboard.writeText(phone).then(() => {
+        const msg = document.getElementById("copied-msg");
+        msg.style.display = "inline";
+
+        setTimeout(() => {
+            msg.style.display = "none";
+        }, 1500);
+    });
+}
+</script>
+
 """, height=0)

@@ -63,15 +63,10 @@ def render_layout(results, capital, viz):
 
     st.subheader("Backtesting Performance")
 
-    fig_backtest = px.line(
-        history,
-        x=history.index,
-        y=history.columns,
-        title="Portfolio Backtest"
-    )
 
-    st.plotly_chart(fig_backtest, use_container_width=True)
-
+    fig_backtest = viz.plot_backtesting(history, show=False)
+    st.plotly_chart(fig_backtest, use_container_width=True,
+                    config={"displayModeBar": False})
     st.markdown("---")
 
     # -------------------------
