@@ -77,17 +77,18 @@ HERO
 }
 
 .hero-subtitle{
-    font-size:70px !important;
+    font-size:60px !important;
     color:#444 !important;
     font-weight:700 !important;
 }
 
 .hero-description{
-    font-size: clamp(20px, 1.4vw, 24px) !important;
+    font-size: clamp(20px, 1.4vw, 18px) !important;
     color:#3f4c74 !important;
     max-width:1300px !important;
     margin:auto !important;
     margin-top:20px !important;
+    text-align:justify !important;
 }
 
 /* =====================================================

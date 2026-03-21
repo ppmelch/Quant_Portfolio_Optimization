@@ -90,11 +90,12 @@ st.markdown("""
  
 <h1 class="typewriter">Quant Portfolio Optimization</h1>
  
-<h2 class="hero-subtitle">Financial Engineering Course Project</h2>
+<h2 class="hero-subtitle">Dynamic Portfolio Optimization & Backtesting Platform</h2>
  
 <p class="hero-description">
-Intere potfolo ozaon dsboard wting, risk metrics,
-and capl alocation strategies. Visualizatis, portfolio weights, and capital evolution
+A quantitative finance dashboard designed to build, optimize, and analyze investment portfolios using advanced strategies such as Minimum Variance, Maximum Sharpe, Semi-Variance, and Omega optimization.
+The platform allows users to simulate portfolio performance through dynamic backtesting, compare results against benchmarks, and evaluate risk using key metrics like volatility and Sharpe ratio. With flexible inputs for asset selection, rebalancing frequency, and capital allocation, it provides a realistic environment for portfolio construction.
+Through an interactive interface, users can visualize performance, correlations, asset allocation, and translate optimal weights into real investment decisions, including capital distribution and number of shares to buy.
 </p>
  
 </section>
