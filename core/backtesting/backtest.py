@@ -1,6 +1,7 @@
 import pandas as pd
 from core.optimization.optimization import OptimizePortfolioWeights
 
+
 class dynamic_backtesting:
     """
     Dynamic backtesting framework combining tactical and strategic portfolios.
@@ -128,13 +129,15 @@ class dynamic_backtesting:
         rets_strategic = backtesting_strategic.pct_change().dropna()
         rets_benchmark = backtesting_benchmark.pct_change().dropna()
 
-        min_len = min(len(rets_tactical), len(rets_strategic), len(rets_benchmark))
+        min_len = min(len(rets_tactical), len(
+            rets_strategic), len(rets_benchmark))
         rets_tactical = rets_tactical.iloc[:min_len, :]
         rets_strategic = rets_strategic.iloc[:min_len, :]
         rets_benchmark = rets_benchmark.iloc[:min_len]
 
         # Capital paths
-        minvar, sharpe, semivar, omega = [capital], [capital], [capital], [capital]
+        minvar, sharpe, semivar, omega = [
+            capital], [capital], [capital], [capital]
         day_counter, periods_counter = 0, 0
 
         # Initial weights
@@ -144,7 +147,8 @@ class dynamic_backtesting:
 
         # Fixed strategic weights (equal-weighted)
         w_strategic = pd.Series(
-            [1 / self.prices_strategic.shape[1]] * self.prices_strategic.shape[1],
+            [1 / self.prices_strategic.shape[1]] *
+            self.prices_strategic.shape[1],
             index=self.prices_strategic.columns
         )
 
@@ -173,13 +177,15 @@ class dynamic_backtesting:
 
             rets_combined = rets_combined.groupby(level=0).mean()
             # alinear índices
-            rets_combined = rets_combined.reindex(combined_minvar.index).fillna(0)
+            rets_combined = rets_combined.reindex(
+                combined_minvar.index).fillna(0)
 
             minvar.append(minvar[-1] * (1 + (rets_combined @ combined_minvar)))
             sharpe.append(sharpe[-1] * (1 + (rets_combined @ combined_sharpe)))
-            semivar.append(semivar[-1] * (1 + (rets_combined @ combined_semivar)))
+            semivar.append(
+                semivar[-1] * (1 + (rets_combined @ combined_semivar)))
             omega.append(omega[-1] * (1 + (rets_combined @ combined_omega)))
-            
+
             day_counter += 1
 
         # Benchmark cumulative capital

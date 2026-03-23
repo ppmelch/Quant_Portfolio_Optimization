@@ -1,12 +1,16 @@
 import streamlit as st
 
 
-# --------------------------------------------------
-# INPUTS
-# --------------------------------------------------
-
 def render_inputs():
-    
+    """
+    Render the main dashboard input controls.
+
+    Returns
+    -------
+    tuple
+        A tuple containing:
+        (raw_tickers, benchmark, interval, rebalancing_freq, capital, run_button)
+    """
     raw_tickers = st.text_input(
         "Tickers (comma separated)",
         value="AVGO , GLD , V , TSM , LLY , AMT , VOO"
@@ -15,10 +19,7 @@ def render_inputs():
     col1, col2, col3, col4, col5 = st.columns(5)
 
     with col1:
-        benchmark = st.text_input(
-            "Benchmark",
-            value="SPY"
-        )
+        benchmark = st.text_input("Benchmark", value="SPY")
 
     with col2:
         interval = st.selectbox(
@@ -50,13 +51,23 @@ def render_inputs():
     return raw_tickers, benchmark, interval, rebalancing_freq, capital, run_button
 
 
-
-# --------------------------------------------------
-# MAIN DASHBOARD (SOLO UI)
-# --------------------------------------------------
-
 def render_layout(results, capital, viz, portfolio_data, stats):
+    """
+    Render the main dashboard layout with portfolio results.
 
+    Parameters
+    ----------
+    results : dict
+        Dictionary containing backtesting results and metrics.
+    capital : float
+        Total investment capital.
+    viz : Visualization
+        Visualization object used to generate plots.
+    portfolio_data : dict
+        Dictionary containing portfolio weights, allocation, shares, and selections.
+    stats : dict
+        Dictionary containing portfolio statistics (return, volatility, sharpe).
+    """
     history = results["backtest"]
     asset_metrics = results["metrics"]
 
@@ -67,10 +78,6 @@ def render_layout(results, capital, viz, portfolio_data, stats):
 
     portfolio_choice = portfolio_data["portfolio_choice"]
 
-    # -------------------------
-    # BACKTEST
-    # -------------------------
-
     st.subheader("Backtesting Performance")
 
     fig_backtest = viz.plot_backtesting(history, show=False)
@@ -78,7 +85,7 @@ def render_layout(results, capital, viz, portfolio_data, stats):
                     config={"displayModeBar": False})
 
     st.markdown("---")
-    
+
     st.subheader("Portfolio Selection")
 
     col1, col2 = st.columns(2)
@@ -100,10 +107,6 @@ def render_layout(results, capital, viz, portfolio_data, stats):
         )
 
     st.markdown("---")
-    
-    # -------------------------
-    # PORTFOLIO METRICS
-    # -------------------------
 
     st.subheader("Portfolio Metrics")
 
@@ -114,10 +117,6 @@ def render_layout(results, capital, viz, portfolio_data, stats):
     col3.metric("Sharpe Ratio", f"{stats['sharpe']:.2f}")
 
     st.markdown("---")
-
-    # -------------------------
-    # STRATEGY BACKTEST + WEIGHTS
-    # -------------------------
 
     col1, col2 = st.columns(2)
 
@@ -145,17 +144,12 @@ def render_layout(results, capital, viz, portfolio_data, stats):
 
         st.plotly_chart(fig_weights, use_container_width=True)
 
-    # -------------------------
-    # CORRELATION + CAPITAL
-    # -------------------------
-
     col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("Correlation Matrix")
 
         corr_matrix = results["correlation"]
-
         fig_corr = viz.corr_matrix(corr_matrix, show=False)
 
         st.plotly_chart(fig_corr, use_container_width=True)
@@ -175,10 +169,6 @@ def render_layout(results, capital, viz, portfolio_data, stats):
         )
 
         st.plotly_chart(fig_cap, use_container_width=True)
-
-    # -------------------------
-    # SHARES
-    # -------------------------
 
     col1, col2 = st.columns(2)
 
@@ -202,10 +192,5 @@ def render_layout(results, capital, viz, portfolio_data, stats):
 
     st.markdown("---")
 
-    # -------------------------
-    # ASSET STATS
-    # -------------------------
-
     st.subheader("Strategies Statistics")
-
     st.dataframe(asset_metrics)

@@ -5,6 +5,7 @@ from core.optimization.optimization import OptimizePortfolioWeights
 from core.backtesting.backtest import dynamic_backtesting
 from core.portfolio.portfolio_construction import PortfolioConstruction
 
+
 def run_pipeline(
     tickers: list,
     benchmark: str,
@@ -15,7 +16,15 @@ def run_pipeline(
     strategy: str = "Min_var",
     benchmark_weight: float = 0.0
 ):
+    """
+    Execute the full portfolio pipeline: data loading, optimization,
+    backtesting, and metrics computation.
 
+    Returns
+    -------
+    dict
+        Dictionary containing all results for the dashboard.
+    """
     financial = Financial(
         assets=tickers,
         benchmark=benchmark,
@@ -24,13 +33,12 @@ def run_pipeline(
 
     prices, benchmark_prices = financial.clean_data()
 
-
     returns = prices.pct_change().dropna()
     benchmark_returns = benchmark_prices.pct_change().dropna()
-    
+
     latest_prices = prices.iloc[-1]
     latest_prices["Benchmark"] = benchmark_prices.iloc[-1]
-    
+
     returns_with_benchmark = returns.copy()
     returns_with_benchmark["Benchmark"] = benchmark_returns
 
@@ -53,15 +61,13 @@ def run_pipeline(
         index=returns.columns
     )
 
-
     constructor = PortfolioConstruction(
         weights_strategy=strategy_weights,
         benchmark_weight=benchmark_weight
     )
 
     final_weights = constructor.combine()
-    
-    
+
     backtest = dynamic_backtesting(
         prices_tactical=prices,
         prices_strategic=prices,
@@ -72,7 +78,6 @@ def run_pipeline(
     )
 
     history = backtest.simulation()
-
     history_returns = history.pct_change().dropna()
 
     metrics_object = Metrics(
@@ -82,26 +87,23 @@ def run_pipeline(
     )
 
     metrics_table = metrics_object.summary()
-    
-    capital_allocation = constructor.capital_allocation(capital)
 
+    capital_allocation = constructor.capital_allocation(capital)
     shares = constructor.compute_shares(prices, benchmark_prices, capital)
-    
     shares_df = shares.to_frame("Shares")
 
-    results = {
-    "prices": prices,
-    "benchmark_prices": benchmark_prices,
-    "returns": returns,
-    "benchmark_returns": benchmark_returns,
-    "backtest": history,
-    "weights": weights,
-    "capital_allocation": capital_allocation,
-    "correlation": corr_matrix,
-    "metrics_object": metrics_object,
-    "metrics": metrics_table,   # ← agregar esto
-    "final_weights": final_weights,
-    "shares": shares,
-    "shares_df": shares_df
+    return {
+        "prices": prices,
+        "benchmark_prices": benchmark_prices,
+        "returns": returns,
+        "benchmark_returns": benchmark_returns,
+        "backtest": history,
+        "weights": weights,
+        "capital_allocation": capital_allocation,
+        "correlation": corr_matrix,
+        "metrics_object": metrics_object,
+        "metrics": metrics_table,
+        "final_weights": final_weights,
+        "shares": shares,
+        "shares_df": shares_df
     }
-    return results

@@ -3,7 +3,14 @@ import streamlit.components.v1 as components
 
 
 def render_navbar(icons):
-    
+    """
+    Render the top navigation bar with links and dropdown menus.
+
+    Parameters
+    ----------
+    icons : dict
+        Dictionary containing base64-encoded images for UI elements.
+    """
     st.markdown(f"""
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     
@@ -58,9 +65,12 @@ def render_navbar(icons):
     
     
     """, unsafe_allow_html=True)
-    
-    
+
+
 def render_hero():
+    """
+    Render the hero section including title, subtitle, and description.
+    """
     st.markdown("""
     <section class="hero">
     
@@ -77,8 +87,17 @@ def render_hero():
     </section>
     """, unsafe_allow_html=True)
 
+
 def render_footer(icons):
-        st.markdown(f"""
+    """
+    Render the footer section with social links and contact information.
+
+    Parameters
+    ----------
+    icons : dict
+        Dictionary containing base64-encoded icons.
+    """
+    st.markdown(f"""
     <footer class="footer">
     
     <div class="social-icons">
@@ -105,10 +124,12 @@ def render_footer(icons):
     
     </footer>
     """, unsafe_allow_html=True)
-    
-    
-def render_scripts():
 
+
+def render_scripts():
+    """
+    Inject custom JavaScript to handle dynamic navbar behavior on scroll.
+    """
     components.html("""
     <script>
 

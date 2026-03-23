@@ -3,9 +3,46 @@ from openai import OpenAI
 
 
 class PortfolioChatbot:
+    """
+    Chatbot interface for interacting with a portfolio optimization dashboard.
 
-    def __init__(self, tickers , benchmark , interval , rebalancing_frequency , capital , strategy , weights , metrics):
-        
+    This class provides contextual explanations about portfolio construction,
+    optimization strategies, and performance metrics using an LLM.
+    """
+
+    def __init__(
+        self,
+        tickers,
+        benchmark,
+        interval,
+        rebalancing_frequency,
+        capital,
+        strategy,
+        weights,
+        metrics
+    ):
+        """
+        Initialize the chatbot with portfolio configuration and results.
+
+        Parameters
+        ----------
+        tickers : list or str
+            Selected assets in the portfolio.
+        benchmark : str
+            Benchmark asset used for comparison.
+        interval : str
+            Historical data interval used for backtesting.
+        rebalancing_frequency : int
+            Frequency of portfolio rebalancing in months.
+        capital : float
+            Initial capital allocated to the portfolio.
+        strategy : str
+            Selected optimization strategy.
+        weights : dict or pd.Series
+            Asset weights in the portfolio.
+        metrics : dict
+            Dictionary containing portfolio performance metrics.
+        """
         self.tickers = tickers
         self.benchmark = benchmark
         self.interval = interval
@@ -15,13 +52,20 @@ class PortfolioChatbot:
         self.weights = weights
         self.metrics = metrics
 
-
         self.client = OpenAI(
             api_key=st.secrets["OPENAI_API_KEY"]
         )
 
     def build_context(self):
+        """
+        Build the system prompt context for the chatbot.
 
+        Returns
+        -------
+        str
+            A formatted string containing portfolio inputs, metrics,
+            and instructions for the assistant.
+        """
         return f"""
         You are a financial portfolio assistant helping users understand a portfolio optimization dashboard.
 
@@ -29,7 +73,6 @@ class PortfolioChatbot:
         
         ----- PORTFOLIO INPUTS -----
         {self.tickers} (Selected Assets)
-        
         
         {self.benchmark} (Benchmark)
         
@@ -109,9 +152,12 @@ class PortfolioChatbot:
         - Relate explanations to the portfolio when possible
         """
 
-
     def run(self):
+        """
+        Execute the chatbot interface within Streamlit.
 
+        Handles message history, user input, API calls, and rendering responses.
+        """
         context = self.build_context()
 
         if "chat_messages" not in st.session_state:
@@ -123,7 +169,6 @@ class PortfolioChatbot:
         prompt = st.chat_input("Ask about the portfolio")
 
         if prompt:
-
             st.session_state.chat_messages.append({
                 "role": "user",
                 "content": prompt
@@ -146,9 +191,21 @@ class PortfolioChatbot:
             })
 
             st.chat_message("assistant").write(reply)
-            
-    def get_response(self, messages):
 
+    def get_response(self, messages):
+        """
+        Generate a response from the language model given a list of messages.
+
+        Parameters
+        ----------
+        messages : list of dict
+            Chat messages formatted for the OpenAI API.
+
+        Returns
+        -------
+        str
+            Model-generated response.
+        """
         response = self.client.chat.completions.create(
             model="gpt-4.1-mini",
             messages=messages

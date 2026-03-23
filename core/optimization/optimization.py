@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
+
 class OptimizePortfolioWeights():
     """
     Portfolio optimization class using different risk–return criteria.
@@ -65,10 +66,10 @@ class OptimizePortfolioWeights():
             Optimal asset weights that minimize portfolio variance.
         """
 
-        var = lambda w: w.T @ self.cov @ w
+        def var(w): return w.T @ self.cov @ w
         w0 = np.ones(self.n_stocks) / self.n_stocks
         bounds = [(0, 1)] * self.n_stocks
-        constraint = lambda w: sum(w) - 1
+        def constraint(w): return sum(w) - 1
 
         result = minimize(
             fun=var,
@@ -100,8 +101,8 @@ class OptimizePortfolioWeights():
         cov = self.cov
         rf = self.rf
 
-        sr = lambda w: -((np.dot(rend, w) - rf) /
-                         ((w.reshape(-1, 1).T @ cov @ w) ** 0.5))
+        def sr(w): return -((np.dot(rend, w) - rf) /
+                            ((w.reshape(-1, 1).T @ cov @ w) ** 0.5))
 
         result = minimize(
             sr,
@@ -147,11 +148,11 @@ class OptimizePortfolioWeights():
             * corr
         )
 
-        semivar = lambda w: w.T @ target_semivariance @ w
+        def semivar(w): return w.T @ target_semivariance @ w
 
         w0 = np.ones(self.n_stocks) / self.n_stocks
         bounds = [(0, 1)] * self.n_stocks
-        constraint = lambda w: sum(w) - 1
+        def constraint(w): return sum(w) - 1
 
         result = minimize(
             fun=semivar,
@@ -194,11 +195,11 @@ class OptimizePortfolioWeights():
         target_upside = np.array(above_zero_target.std())
 
         omega_ratio = target_upside / target_downside
-        omega = lambda w: -sum(omega_ratio * w)
+        def omega(w): return -sum(omega_ratio * w)
 
         w0 = np.ones(self.n_stocks) / self.n_stocks
         bounds = [(0.05, 0.5)] * self.n_stocks
-        constraint = lambda w: sum(w) - 1
+        def constraint(w): return sum(w) - 1
 
         result = minimize(
             fun=omega,
@@ -212,6 +213,7 @@ class OptimizePortfolioWeights():
         w = w / w.sum()
 
         return w
+
 
 class TacticalOptimizeWeights(OptimizePortfolioWeights):
     """
