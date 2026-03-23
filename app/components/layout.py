@@ -1,16 +1,15 @@
-import pathlib
-import pandas as pd
 import streamlit as st
-import plotly.express as px
-from backend.src.analytics.metrics import Metrics
-from backend.src.portfolio.portfolio_construction import PortfolioConstruction
 
+
+# --------------------------------------------------
+# INPUTS
+# --------------------------------------------------
 
 def render_inputs():
     
     raw_tickers = st.text_input(
         "Tickers (comma separated)",
-        value="AVGO , GLD , V , TSM , LLY , AMT , VOO" 
+        value="AVGO , GLD , V , TSM , LLY , AMT , VOO"
     )
 
     col1, col2, col3, col4, col5 = st.columns(5)
@@ -18,21 +17,21 @@ def render_inputs():
     with col1:
         benchmark = st.text_input(
             "Benchmark",
-            value="SPY" 
+            value="SPY"
         )
 
     with col2:
         interval = st.selectbox(
             "Data Interval",
-            ["6m", "1y", "2y", "5y", "10y"] 
+            ["6m", "1y", "2y", "5y", "10y"]
         )
-        
-    with col3: 
+
+    with col3:
         rebalancing_freq = st.number_input(
             "Rebalancing Frequency (months)",
             min_value=1,
             value=3,
-            step=1 , 
+            step=1,
         )
 
     with col4:
@@ -40,22 +39,33 @@ def render_inputs():
             "Capital to invest ($)",
             min_value=1000,
             value=1_000_000,
-            step=100_000 
+            step=100_000
         )
 
     with col5:
         st.write("")
         st.write("")
-        run_button = st.button("Run", type="primary" )
+        run_button = st.button("Run", type="primary")
 
     return raw_tickers, benchmark, interval, rebalancing_freq, capital, run_button
 
-def render_layout(results, capital, viz):
 
-    prices = results["prices"]
+
+# --------------------------------------------------
+# MAIN DASHBOARD (SOLO UI)
+# --------------------------------------------------
+
+def render_layout(results, capital, viz, portfolio_data, stats):
+
     history = results["backtest"]
-    weights = results["weights"]
     asset_metrics = results["metrics"]
+
+    combined_weights = portfolio_data["combined_weights"]
+    allocation = portfolio_data["allocation"]
+    shares = portfolio_data["shares"]
+    shares_df = portfolio_data["shares_df"]
+
+    portfolio_choice = portfolio_data["portfolio_choice"]
 
     # -------------------------
     # BACKTEST
@@ -63,16 +73,12 @@ def render_layout(results, capital, viz):
 
     st.subheader("Backtesting Performance")
 
-
     fig_backtest = viz.plot_backtesting(history, show=False)
     st.plotly_chart(fig_backtest, use_container_width=True,
                     config={"displayModeBar": False})
+
     st.markdown("---")
-
-    # -------------------------
-    # PORTFOLIO SELECTOR
-    # -------------------------
-
+    
     st.subheader("Portfolio Selection")
 
     col1, col2 = st.columns(2)
@@ -80,7 +86,8 @@ def render_layout(results, capital, viz):
     with col1:
         portfolio_choice = st.selectbox(
             "Choose Portfolio Strategy",
-            ["Min_var", "Max_sharpe", "Min_semivar", "Max_omega"]
+            ["Min_var", "Max_sharpe", "Min_semivar", "Max_omega"],
+            key="portfolio_choice"
         )
 
     with col2:
@@ -88,65 +95,33 @@ def render_layout(results, capital, viz):
             "Benchmark Allocation",
             0.0,
             1.0,
-            0.50,
-            step=0.05 
+            key="benchmark_weight",
+            step=0.05
         )
 
-    strategy_map = {
-        "Min_var": "Min_var",
-        "Max_sharpe": "Max_sharpe",
-        "Min_semivar": "Min_semivar",
-        "Max_omega": "Max_omega"
-    }
-
-    selected_weights = weights[strategy_map[portfolio_choice]]
+    st.markdown("---")
     
-    constructor = PortfolioConstruction(weights_strategy=selected_weights, benchmark_weight=benchmark_weight)
-  
     # -------------------------
     # PORTFOLIO METRICS
     # -------------------------
 
     st.subheader("Portfolio Metrics")
-        
-
-    history_returns = results["backtest"].pct_change().dropna()
-
-    portfolio_returns = history_returns[portfolio_choice]
-    benchmark_returns = history_returns["Benchmark"]
-
-    combined_returns = (
-        (1 - benchmark_weight) * portfolio_returns +
-        benchmark_weight * benchmark_returns
-    )
-
-    metrics = Metrics(
-        returns=combined_returns.to_frame("Portfolio"),
-        benchmark=benchmark_returns,
-        rf=0.0375
-    )
-
-    portfolio_stats = metrics.portfolio_metrics("Portfolio")
 
     col1, col2, col3 = st.columns(3)
 
-    col1.metric("Expected Return", f"{portfolio_stats['return']:.2%}")
-    col2.metric("Volatility", f"{portfolio_stats['vol']:.2%}")
-    col3.metric("Sharpe Ratio", f"{portfolio_stats['sharpe']:.2f}")
+    col1.metric("Expected Return", f"{stats['return']:.2%}")
+    col2.metric("Volatility", f"{stats['vol']:.2%}")
+    col3.metric("Sharpe Ratio", f"{stats['sharpe']:.2f}")
 
     st.markdown("---")
 
     # -------------------------
-    # PORTFOLIO WEIGHTS
+    # STRATEGY BACKTEST + WEIGHTS
     # -------------------------
-    
-    combined_weights = constructor.combine()
-
 
     col1, col2 = st.columns(2)
 
     with col1:
-
         st.subheader("Selected Strategy Backtest")
 
         fig_strategy = viz.plot_backtesting_strategy(
@@ -158,7 +133,6 @@ def render_layout(results, capital, viz):
         st.plotly_chart(fig_strategy, use_container_width=True)
 
     with col2:
-
         st.subheader("Portfolio Weights")
 
         fig_weights = viz.plot_weights_pie(
@@ -170,29 +144,23 @@ def render_layout(results, capital, viz):
         fig_weights.update_traces(textinfo="label+percent")
 
         st.plotly_chart(fig_weights, use_container_width=True)
-        
 
     # -------------------------
     # CORRELATION + CAPITAL
     # -------------------------
-    allocation = constructor.capital_allocation(capital)
-
-
 
     col1, col2 = st.columns(2)
 
     with col1:
-
         st.subheader("Correlation Matrix")
-        
+
         corr_matrix = results["correlation"]
-        
+
         fig_corr = viz.corr_matrix(corr_matrix, show=False)
 
         st.plotly_chart(fig_corr, use_container_width=True)
 
     with col2:
-
         st.subheader("Capital Allocation")
 
         fig_cap = viz.plot_weights_pie(
@@ -211,30 +179,14 @@ def render_layout(results, capital, viz):
     # -------------------------
     # SHARES
     # -------------------------
-    
-    shares = constructor.compute_shares(
-        prices,
-        results["benchmark_prices"],
-        capital
-    )
-            
-                
-    shares_df = constructor.shares_dataframe(
-        prices,
-        results["benchmark_prices"],
-        capital
-    )
 
     col1, col2 = st.columns(2)
 
     with col1:
-
         st.subheader("Shares to Buy")
-
         st.dataframe(shares_df)
 
     with col2:
-
         fig_qty = viz.plot_weights_pie(
             shares,
             portfolio_choice,
@@ -257,5 +209,3 @@ def render_layout(results, capital, viz):
     st.subheader("Strategies Statistics")
 
     st.dataframe(asset_metrics)
-    
-    

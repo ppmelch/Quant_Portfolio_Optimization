@@ -146,3 +146,12 @@ class PortfolioChatbot:
             })
 
             st.chat_message("assistant").write(reply)
+            
+    def get_response(self, messages):
+
+        response = self.client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=messages
+        )
+
+        return response.choices[0].message.content

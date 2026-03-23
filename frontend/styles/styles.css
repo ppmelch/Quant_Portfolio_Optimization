@@ -486,3 +486,55 @@ FOOTER
     background:#960505;
     color:white;
 }
+
+/* =====================================================
+CHATBOT
+===================================================== */
+#chat-bubble {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 65px;
+    height: 65px;
+    background: #111;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    z-index: 9999;
+    font-size: 24px;
+}
+
+#chat-window {
+    position: fixed;
+    bottom: 100px;
+    right: 25px;
+    width: 320px;
+    height: 400px;
+    background: #111;
+    border-radius: 20px;
+    display: none;
+    flex-direction: column;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+#chat-header {
+    padding: 12px;
+    font-weight: bold;
+    background: #1f1f1f;
+}
+
+#chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+#chat-input {
+    border: none;
+    padding: 10px;
+    outline: none;
+}
