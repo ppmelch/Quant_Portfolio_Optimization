@@ -1,5 +1,5 @@
 import streamlit as st
-from app.components.visualization import Visualization
+from app.components.viz import Visualization
 from app.utils.assets import load_css, load_icons
 from core.pipeline.run_pipeline import run_pipeline
 from app.components.layout import render_inputs, render_layout
